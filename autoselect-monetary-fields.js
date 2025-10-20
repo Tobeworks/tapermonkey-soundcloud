@@ -13,31 +13,26 @@
     'use strict';
     
     window.setAllRightsholders = async function(rightsholderName = null) {
+        const buttons = document.querySelectorAll('.monetizationTerritory__rightsholderSelect button.sc-button-dropdown');
+        if (buttons.length === 0) {
+            alert('No rights holder fields found. Are you on the correct page?');
+            return;
+        }
+        
         if (!rightsholderName) {
-            const buttons = document.querySelectorAll('.monetizationTerritory__rightsholderSelect button.sc-button-dropdown');
-            if (buttons.length === 0) {
-                alert('No rights holder fields found. Are you on the correct page?');
+            rightsholderName = localStorage.getItem('sc_preferred_rightsholder');
+        }
+        
+        if (!rightsholderName) {
+            rightsholderName = prompt('Which rights holder would you like to set?\n\nEnter the exact name as it appears in the dropdown.\nThis will be saved for future use.');
+            
+            if (!rightsholderName) {
+                console.log('Cancelled');
                 return;
             }
             
-            buttons[0].click();
-            await new Promise(r => setTimeout(r, 500));
-            
-            const dd = document.querySelector('[id^="dropdown-button-"]');
-            if (dd) {
-                const options = Array.from(dd.querySelectorAll('li.linkMenu__item')).map(li => li.textContent.trim());
-                dd.remove();
-                
-                rightsholderName = prompt('Which rights holder would you like to set?\n\nAvailable options:\n' + options.join('\n'), options[options.length - 1]);
-                
-                if (!rightsholderName) {
-                    console.log('Cancelled');
-                    return;
-                }
-            } else {
-                alert('Could not open dropdown');
-                return;
-            }
+            localStorage.setItem('sc_preferred_rightsholder', rightsholderName);
+            console.log(`Saved "${rightsholderName}" as default`);
         }
         
         console.log(`Starting... Setting all fields to: ${rightsholderName}`);
