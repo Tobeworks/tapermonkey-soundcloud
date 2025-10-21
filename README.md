@@ -20,7 +20,7 @@ Automatically fill all rights holder fields on SoundCloud with one click.
 1. Install [Tampermonkey](https://www.tampermonkey.net/) in your browser
 2. Click on the Tampermonkey icon → "Create a new script"
 3. Delete the default content
-4. Copy and paste the script from `soundcloud-rightsholder-autofill.user.js`
+4. Copy and paste the script from `rights-holder-auto-select.js`
 5. Save (Ctrl+S or click the save icon)
 6. Done! 🎉
 
