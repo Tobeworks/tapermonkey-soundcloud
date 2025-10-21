@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         SoundCloud Rights Holder Auto-Select
 // @namespace    http://tampermonkey.net/
-// @version      1.2
+// @version      1.3
 // @description  Automatically sets all rights holder fields to a selected value
 // @match        *://soundcloud.com/*
 // @match        *://*.soundcloud.com/*
@@ -98,10 +98,34 @@
     button.onmouseout = () => button.style.background = '#f50';
     button.onclick = () => setAllRightsholders();
 
+    const resetButton = document.createElement('button');
+    resetButton.textContent = '🔄 Reset';
+    resetButton.style.cssText = 'position:fixed;bottom:20px;right:260px;z-index:9999;padding:12px 20px;background:#666;color:white;border:none;border-radius:8px;cursor:pointer;font-weight:bold;box-shadow:0 4px 12px rgba(0,0,0,0.3);font-size:14px;';
+    resetButton.onmouseover = () => resetButton.style.background = '#888';
+    resetButton.onmouseout = () => resetButton.style.background = '#666';
+    resetButton.onclick = () => {
+        const current = localStorage.getItem('sc_preferred_rightsholder');
+        if (current) {
+            if (confirm(`Reset saved rights holder "${current}"?\n\nYou will be asked again next time.`)) {
+                localStorage.removeItem('sc_preferred_rightsholder');
+                alert('✓ Rights holder reset successfully!');
+                console.log('Rights holder preference cleared');
+            }
+        } else {
+            alert('No saved rights holder found.');
+        }
+    };
+
     const observer = new MutationObserver(() => {
-        if (document.querySelector('.monetizationTerritory__rightsholderSelect') && !document.getElementById('rightsholder-autofill-btn')) {
-            button.id = 'rightsholder-autofill-btn';
-            document.body.appendChild(button);
+        if (document.querySelector('.monetizationTerritory__rightsholderSelect')) {
+            if (!document.getElementById('rightsholder-autofill-btn')) {
+                button.id = 'rightsholder-autofill-btn';
+                document.body.appendChild(button);
+            }
+            if (!document.getElementById('rightsholder-reset-btn')) {
+                resetButton.id = 'rightsholder-reset-btn';
+                document.body.appendChild(resetButton);
+            }
         }
     });
 
